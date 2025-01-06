@@ -8,6 +8,8 @@ const PORT=process.env.PORT;
 
 const app=express()
 
+app.use(express.json()) //Helps to extract data from request body
+
 app.use("/api/auth",appRoutes)
 
 app.listen(PORT,()=>{

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.connect(
+const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -14,8 +14,7 @@ const userSchema = new mongoose.connect(
     password: {
       type: String,
       required: true,
-      minLength: 6,
-      maxLength: 25,
+      minLength: 8,
     },
     profilePic: {
       type: String,
