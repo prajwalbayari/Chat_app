@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import AuthImagePattern from "../components/AuthImagePattern";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,12 +23,25 @@ const SignUpPage = () => {
 
   const { signup, isSigningUp } = userAuthStore();
 
-  const validateForm = () => {};
+  const validateForm = () => {
+    if (!formData.fullName.trim()) return toast.error("Fullname is required!!");
+    if (!formData.email.trim()) return toast.error("Email is required!!");
+    if (!/\S+@\S+\.\S+/.test(formData.email))
+      return toast.error("Invalid email format");
+    if (!formData.password.trim()) return toast.error("Password is required!!");
+    if (formData.password.length < 6)
+      return toast.error("Password should contain atleast 6 characters");
+
+    return true;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const success = validateForm(formData);
+    if (success===true) signup(formData);
   };
-  // return ("Hello world")
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* left side */}
@@ -155,7 +169,6 @@ const SignUpPage = () => {
         title="Join our community"
         subtitle="Connect with friends, share moments, and stay in touch with your loved ones."
       />
-
     </div>
   );
 };
