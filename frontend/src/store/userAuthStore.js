@@ -52,11 +52,16 @@ export const userAuthStore = create((set) => ({
       if (error.response) {
         // API responded with an error (status code 4xx or 5xx)
         console.error("API Error:", error.response.data);
-        toast.error(error.response.data.message || "Login failed. Please check your credentials.");
+        toast.error(
+          error.response.data.message ||
+            "Login failed. Please check your credentials."
+        );
       } else if (error.request) {
         // Request was made, but no response was received
         console.error("Network Error:", error.request);
-        toast.error("Network error. Please check your connection and try again.");
+        toast.error(
+          "Network error. Please check your connection and try again."
+        );
       } else {
         // Something else caused the error
         console.error("Unexpected Error:", error.message);
@@ -74,6 +79,20 @@ export const userAuthStore = create((set) => ({
       toast.success("Logged out successfully!!");
     } catch (error) {
       toast.error(error.reponse.data.message);
+    }
+  },
+
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
+    try {
+      const res = await axiosInstance.put("/auth/update-profile", data);
+      set({ authUser: res.data });
+      toast.success("Profile updated successfully!!");
+    } catch (error) {
+      toast.error(error.reponse.data.message);
+      console.log("Error in updateProfile (useAuthStore)");
+    } finally {
+      set({ isUpdatingProfile: false });
     }
   },
 }));
