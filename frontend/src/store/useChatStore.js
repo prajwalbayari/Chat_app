@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
+import { userAuthStore } from "./userAuthStore";
 
 export const useChatStore = create((set, get) => ({
   messages: [],
@@ -48,6 +49,25 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.reponse.data.message);
       console.log("Error in userAuthStore", error.reponse.message.data);
     }
+  },
+
+  subscribeToMessage: () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = userAuthStore.getState().socket;
+
+    socket.on("newMessage", (newMessage) => {
+      const isMessageSentFromSelectedUser =
+        newMessage.senderId === selectedUser._id;
+      if (!isMessageSentFromSelectedUser) return; //So that messages are only sent to those who are it is meant to
+      set({ messages: [...get().messages, newMessage] });
+    });
+  },
+
+  unsubscribeFromMessages: () => {
+    const socket = userAuthStore.getState().socket;
+    socket.off("newMessage");
   },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
