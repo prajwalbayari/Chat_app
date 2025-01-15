@@ -6,11 +6,9 @@ import cookieParser from "cookie-parser";
 import messageRoutes from "./routes/message.routes.js";
 import cors from "cors";
 import { app, server } from "./lib/socket.js";
-import path from "path";
 
 dotenv.config();
 const PORT = process.env.PORT;
-const __dirname = path.resolve();
 
 app.use(express.json()); //Helps to extract data from request body
 app.use(cookieParser()); //Verify cookies
@@ -26,15 +24,6 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use("/api/auth", appRoutes);
 app.use("/api/messages", messageRoutes);
-
-//Hosting 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "/frontend", "dist", "index.html"));
-  });
-}
 
 server.listen(PORT, () => {
   console.log("Server is running on port :" + PORT);
